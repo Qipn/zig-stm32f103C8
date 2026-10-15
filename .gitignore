@@ -1,0 +1,18 @@
+# Zig 构建产物 / 缓存
+.zig-cache/
+zig-out/
+zig-pkg/
+
+# microzig 依赖源码副本（按 readme 用 nix flake prefetch 重建）
+.microzig-src/
+
+# 调试 / 烧录日志
+tmp/
+
+# Nix 构建结果符号链接
+result
+result-*
+
+# 编辑器
+*.swp
+*.swo

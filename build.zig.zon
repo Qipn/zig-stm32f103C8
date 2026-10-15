@@ -1,0 +1,21 @@
+.{
+    .name = .car_zig,
+    .version = "0.0.0",
+    .minimum_zig_version = "0.17.0",
+    .fingerprint = 0xca6930314ad463bf,
+    .dependencies = .{
+        // microzig 0.17.20 —— 本地完整副本 (path 依赖)。
+        // 说明: microzig 的 build.zig.zon `.paths` 未列出 port/ core/ 等
+        // 它实际引用的目录, 导致 zig 从 git 直接拉取时不完整 (报
+        // "dependency 'port/stmicro/stm32' does not have a build.zig")。
+        // 因此改用本地副本。重建方法见 readme。
+        .microzig = .{
+            .path = ".microzig-src",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "apps",
+    },
+}
