@@ -2,6 +2,35 @@
 
 STM32F103 (Cortex-M3) 裸机 Zig 项目，基于 [microzig](https://github.com/ZigEmbeddedGroup/microzig) HAL。
 
+## 项目简介
+
+本项目是将一个 STM32F103 平衡小车的**裸机 C 固件**逐步移植为
+**Zig + microzig** 的实践。目标是用 Zig 重写全部硬件驱动，验证其在裸机
+嵌入式下的可用性与表达力。
+
+- **驱动全部用 Zig 实现**（除 DMP 官方库直接编入，见下）。
+- **每个驱动一个可运行的验证 app**（`apps/`），一个 app 编成一个独立固件。
+- **驱动全部在真实硬件上验证过**（LED/OLED/按键/串口/IMU/电机/编码器/ADC/EXTI）。
+- 踩过的坑记录在 [`docs/microzig-notes.md`](docs/microzig-notes.md) 与
+  [`docs/troubleshooting.md`](docs/troubleshooting.md)。
+
+### 已移植驱动
+
+| 驱动 | 说明 |
+|------|------|
+| LED / delay / USART1 | GPIO、SysTick 延时、串口 |
+| OLED (SSD1306) | 软件 SPI 128x64 |
+| 按键 | 单击/双击/长按；另一版含 FIFO + 连发 |
+| 软件 I2C + MPU6050 | 读 6 轴/温度 + data-ready 中断 |
+| DMP | 混合编译官方 C 库，输出四元数/欧拉角 |
+| ADC | 电池电压检测 |
+| 电机 (TIM1 PWM) / 编码器 (TIM2/TIM4) | 电机驱动与测速 |
+| EXTI / NVIC | 外部中断与优先级 |
+
+> **为什么含 C？** MPU6050 的 DMP 是 5200 行官方 C，直接翻译不现实，
+> 故用 `build.zig` 把其 C 源码**编入固件**，Zig 侧用 `export`/`extern` 桥接。
+> 其余驱动均为纯 Zig。
+
 ## 硬件
 
 - MCU: STM32F103C8 (64KB Flash / 20KB RAM)
